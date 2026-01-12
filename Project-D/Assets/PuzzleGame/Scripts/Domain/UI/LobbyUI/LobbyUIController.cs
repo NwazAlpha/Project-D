@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using PuzzleGame.Foundation.Service;
+using PuzzleGame.Domain.UI.SettingsUI;
 using PuzzleGame.Module;
 
 namespace PuzzleGame.Domain.UI.LobbyUI
@@ -14,6 +15,9 @@ namespace PuzzleGame.Domain.UI.LobbyUI
         [SerializeField] private Button _stageListButton;
         [SerializeField] private Button _shopButton;
         [SerializeField] private Button _settingsButton;
+        
+        [Header("Panels")]
+        [SerializeField] private SettingsPanel _settingsPanel;
         
         private void Start()
         {
@@ -29,6 +33,10 @@ namespace PuzzleGame.Domain.UI.LobbyUI
             
             if (_settingsButton != null)
                 _settingsButton.onClick.AddListener(OnSettingsClicked);
+            
+            // 설정 패널 초기 숨김
+            if (_settingsPanel != null)
+                _settingsPanel.Hide();
             
             LogHelper.Log("LobbyUI", "Lobby scene initialized");
         }
@@ -47,8 +55,15 @@ namespace PuzzleGame.Domain.UI.LobbyUI
         
         private void OnSettingsClicked()
         {
-            // TODO: Settings 패널 표시
-            LogHelper.Log("LobbyUI", "Settings clicked");
+            if (_settingsPanel != null)
+            {
+                _settingsPanel.Show();
+            }
+            else
+            {
+                LogHelper.Log("LobbyUI", "Settings panel is not assigned");
+            }
         }
     }
 }
+

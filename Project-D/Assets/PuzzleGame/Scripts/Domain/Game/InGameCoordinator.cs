@@ -28,7 +28,10 @@ namespace PuzzleGame.Domain.Game
         [Header("References")]
         [SerializeField] private BoardManager _boardManager;
         [SerializeField] private SelectionController _selectionController;
-        [SerializeField] private StagePreset _testPreset; // 테스트용
+        
+        [Header("Stage Data")]
+        [SerializeField] private StagePreset[] _stagePresets;
+        [SerializeField] private StagePreset _testPreset; // 테스트용 (CurrentStageId가 0일 때)
         
         private JudgmentSystem _judgmentSystem;
         private EGameState _gameState;
@@ -70,10 +73,45 @@ namespace PuzzleGame.Domain.Game
                 _boardManager.OnBoardCleared += HandleBoardCleared;
             }
             
-            // 테스트 프리셋 로드
-            if (_testPreset != null)
+            // 스테이지 로드
+            LoadCurrentStage();
+        }
+        
+        /// <summary>
+        /// 현재 스테이지 로드
+        /// </summary>
+        private void LoadCurrentStage()
+        {
+            int stageId = GameManager.Instance?.CurrentStageId ?? 0;
+            StagePreset presetToLoad = null;
+            
+            // stageId로 프리셋 찾기
+            if (stageId > 0 && _stagePresets != null)
             {
-                LoadStage(_testPreset);
+                foreach (var preset in _stagePresets)
+                {
+                    if (preset != null && preset.StageId == stageId)
+                    {
+                        presetToLoad = preset;
+                        break;
+                    }
+                }
+            }
+            
+            // 찾지 못하면 테스트 프리셋 사용
+            if (presetToLoad == null)
+            {
+                presetToLoad = _testPreset;
+                LogHelper.Log("InGameCoordinator", $"Stage {stageId} not found, using test preset");
+            }
+            
+            if (presetToLoad != null)
+            {
+                LoadStage(presetToLoad);
+            }
+            else
+            {
+                LogHelper.Log("InGameCoordinator", "No preset available to load!");
             }
         }
         

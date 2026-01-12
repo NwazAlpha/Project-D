@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using PuzzleGame.Domain.Board;
 
 namespace PuzzleGame.Domain.UI.InGame
 {
@@ -30,6 +31,9 @@ namespace PuzzleGame.Domain.UI.InGame
         [SerializeField] private TextMeshProUGUI _clearScoreText;
         [SerializeField] private Button _nextStageButton;
         [SerializeField] private Button _returnToListButton;
+        
+        [Header("Board")]
+        [SerializeField] private BoardView _boardView;
         
         // Properties for Presenter
         public TextMeshProUGUI ScoreText => _scoreText;
@@ -85,6 +89,27 @@ namespace PuzzleGame.Domain.UI.InGame
                     _clearScoreText.text = $"Final Score: {score}";
                 }
             }
+            
+            // 클리어 패널이 표시되면 다른 UI 숨김
+            SetGameplayUIVisible(!show);
+        }
+        
+        /// <summary>
+        /// 게임플레이 UI 표시/숨김
+        /// </summary>
+        private void SetGameplayUIVisible(bool visible)
+        {
+            if (_scoreText != null)
+                _scoreText.gameObject.SetActive(visible);
+            if (_targetText != null)
+                _targetText.gameObject.SetActive(visible);
+            if (_restartButton != null)
+                _restartButton.gameObject.SetActive(visible);
+            if (_pauseButton != null)
+                _pauseButton.gameObject.SetActive(visible);
+            if (_boardView != null)
+                _boardView.gameObject.SetActive(visible);
         }
     }
 }
+
